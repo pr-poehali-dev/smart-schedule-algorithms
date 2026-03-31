@@ -1020,12 +1020,28 @@ function RegisterPage({ onBack, onComplete }: { onBack: () => void; onComplete: 
   );
 }
 
+// ── Доступ по ролям ───────────────────────────────────────────────────────────
+const ROLE_NAV: Record<UserRole, string[]> = {
+  student: ["schedule", "teachers"],
+  teacher: ["schedule", "heatmap", "substitutions", "reports", "teachers"],
+  admin:   ["schedule", "heatmap", "analytics", "conflicts", "substitutions", "reports", "teachers"],
+};
+
+const ROLE_CONFIG: Record<UserRole, { label: string; sublabel: string; icon: string; iconColor: string; iconBg: string }> = {
+  student: { label: "Ученик",          sublabel: "Просмотр расписания", icon: "BookOpen", iconColor: "text-cyan-400",   iconBg: "from-cyan-500/30 to-cyan-500/10" },
+  teacher: { label: "Учитель",         sublabel: "Управление занятиями", icon: "GraduationCap", iconColor: "text-violet-400", iconBg: "from-violet-500/30 to-violet-500/10" },
+  admin:   { label: "Администратор",   sublabel: "Полный доступ",        icon: "Shield",    iconColor: "text-emerald-400", iconBg: "from-emerald-500/30 to-emerald-500/10" },
+};
+
 export default function Index() {
   const [screen, setScreen] = useState<AppScreen>("landing");
+  const [currentRole, setCurrentRole] = useState<UserRole>("admin");
   const [activeSection, setActiveSection] = useState("schedule");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const conflictCount = CONFLICTS.length;
-  const currentNav = NAV_ITEMS.find(n => n.id === activeSection);
+
+  const allowedNav = NAV_ITEMS.filter(item => ROLE_NAV[currentRole].includes(item.id));
+  const currentNav = allowedNav.find(n => n.id === activeSection) ?? allowedNav[0];
 
   if (screen === "landing") {
     return (
@@ -1040,23 +1056,26 @@ export default function Index() {
     return (
       <RegisterPage
         onBack={() => setScreen("landing")}
-        onComplete={() => setScreen("dashboard")}
+        onComplete={(role) => { setCurrentRole(role); setActiveSection("schedule"); setScreen("dashboard"); }}
       />
     );
   }
 
   const renderSection = () => {
-    switch (activeSection) {
-      case "schedule": return <ScheduleSection />;
-      case "heatmap": return <HeatmapSection />;
-      case "analytics": return <AnalyticsSection />;
-      case "conflicts": return <ConflictsSection />;
+    const section = ROLE_NAV[currentRole].includes(activeSection) ? activeSection : "schedule";
+    switch (section) {
+      case "schedule":      return <ScheduleSection />;
+      case "heatmap":       return <HeatmapSection />;
+      case "analytics":     return <AnalyticsSection />;
+      case "conflicts":     return <ConflictsSection />;
       case "substitutions": return <SubstitutionsSection />;
-      case "reports": return <ReportsSection />;
-      case "teachers": return <TeachersSection />;
-      default: return <ScheduleSection />;
+      case "reports":       return <ReportsSection />;
+      case "teachers":      return <TeachersSection />;
+      default:              return <ScheduleSection />;
     }
   };
+
+  const roleCfg = ROLE_CONFIG[currentRole];
 
   return (
     <div className="mesh-bg min-h-screen flex">
@@ -1068,15 +1087,15 @@ export default function Index() {
           </div>
           {sidebarOpen && (
             <div className="animate-fade-in-left">
-              <div className="text-white font-bold text-sm leading-tight">СхемаПлюс</div>
-              <div className="text-white/30 text-[10px] font-mono">Умное расписание</div>
+              <div className="text-white font-bold text-sm leading-tight">Умное расписание</div>
+              <div className="text-white/30 text-[10px] font-mono">2025–2026</div>
             </div>
           )}
         </div>
 
         <nav className="flex-1 py-3 px-2 space-y-0.5 overflow-y-auto">
-          {NAV_ITEMS.map(item => {
-            const isActive = activeSection === item.id;
+          {allowedNav.map(item => {
+            const isActive = (currentNav?.id ?? "schedule") === item.id;
             const hasConflict = item.id === "conflicts" && conflictCount > 0;
             return (
               <button
@@ -1105,20 +1124,37 @@ export default function Index() {
           })}
         </nav>
 
-        <div className={`p-3 border-t border-white/6 ${sidebarOpen ? "" : "flex justify-center"}`}>
+        {/* Role switcher (dev) + user info */}
+        <div className={`p-3 border-t border-white/6 space-y-2 ${sidebarOpen ? "" : "flex flex-col items-center"}`}>
+          {sidebarOpen && (
+            <div className="flex gap-1">
+              {(["student","teacher","admin"] as UserRole[]).map(r => (
+                <button
+                  key={r}
+                  onClick={() => { setCurrentRole(r); setActiveSection("schedule"); }}
+                  className={`flex-1 py-1 rounded-lg text-[10px] font-mono transition-all ${currentRole === r ? "bg-white/12 text-white/70" : "text-white/25 hover:text-white/45"}`}
+                >
+                  {r === "student" ? "Уч-к" : r === "teacher" ? "Учит." : "Адм."}
+                </button>
+              ))}
+            </div>
+          )}
           {sidebarOpen ? (
             <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/3">
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-500/30 to-cyan-500/20 flex items-center justify-center border border-white/10">
-                <Icon name="Shield" size={13} className="text-emerald-400" />
+              <div className={`w-7 h-7 rounded-lg bg-gradient-to-br ${roleCfg.iconBg} flex items-center justify-center border border-white/10`}>
+                <Icon name={roleCfg.icon} size={13} className={roleCfg.iconColor} />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-white/60 text-xs font-medium truncate">Администратор</div>
-                <div className="text-white/25 text-[10px] font-mono">Полный доступ</div>
+                <div className="text-white/60 text-xs font-medium truncate">{roleCfg.label}</div>
+                <div className="text-white/25 text-[10px] font-mono">{roleCfg.sublabel}</div>
               </div>
+              <button onClick={() => setScreen("landing")} className="text-white/20 hover:text-white/50 transition-colors">
+                <Icon name="LogOut" size={13} />
+              </button>
             </div>
           ) : (
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-500/30 to-cyan-500/20 flex items-center justify-center border border-white/10">
-              <Icon name="Shield" size={13} className="text-emerald-400" />
+            <div className={`w-7 h-7 rounded-lg bg-gradient-to-br ${roleCfg.iconBg} flex items-center justify-center border border-white/10`}>
+              <Icon name={roleCfg.icon} size={13} className={roleCfg.iconColor} />
             </div>
           )}
         </div>
@@ -1140,18 +1176,25 @@ export default function Index() {
           </div>
           <div className="flex-1" />
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/4 border border-white/8">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-white/50 text-xs font-mono">2025–2026</span>
+            {/* Роль текущего пользователя */}
+            <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-mono ${
+              currentRole === "student" ? "bg-cyan-400/8 border-cyan-400/20 text-cyan-400" :
+              currentRole === "teacher" ? "bg-violet-400/8 border-violet-400/20 text-violet-400" :
+              "bg-emerald-400/8 border-emerald-400/20 text-emerald-400"
+            }`}>
+              <Icon name={roleCfg.icon} size={11} />
+              {roleCfg.label}
             </div>
-            <button className="relative w-8 h-8 rounded-lg bg-white/4 border border-white/8 flex items-center justify-center text-white/40 hover:text-white/70 transition-colors">
-              <Icon name="Bell" size={15} />
-              {conflictCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-red-500 text-white text-[8px] flex items-center justify-center font-bold">
-                  {conflictCount}
-                </span>
-              )}
-            </button>
+            {currentRole === "admin" && (
+              <button className="relative w-8 h-8 rounded-lg bg-white/4 border border-white/8 flex items-center justify-center text-white/40 hover:text-white/70 transition-colors">
+                <Icon name="Bell" size={15} />
+                {conflictCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-red-500 text-white text-[8px] flex items-center justify-center font-bold">
+                    {conflictCount}
+                  </span>
+                )}
+              </button>
+            )}
             <button className="w-8 h-8 rounded-lg bg-white/4 border border-white/8 flex items-center justify-center text-white/40 hover:text-white/70 transition-colors">
               <Icon name="Settings" size={15} />
             </button>
