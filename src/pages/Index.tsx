@@ -14,47 +14,145 @@ const PERIODS = [
   { num: 7, time: "13:40–14:25" },
 ];
 
-const SCHEDULE_DATA: Record<string, Record<number, { subject: string; teacher: string; room: string; conflict?: boolean }>> = {
+type Lesson = { subject: string; teacher: string; room: string; conflict?: boolean };
+type WeekSchedule = Record<string, Record<number, Lesson>>;
+
+// ── Расписания по группам параллелей ──────────────────────────────────────────
+
+const SCHEDULE_JUNIOR: WeekSchedule = {
   "Пн": {
-    1: { subject: "Математика", teacher: "Иванов А.П.", room: "214" },
-    2: { subject: "Русский язык", teacher: "Петрова О.С.", room: "118" },
-    3: { subject: "Физика", teacher: "Козлов Д.В.", room: "307" },
-    4: { subject: "История", teacher: "Смирнова Н.А.", room: "205", conflict: true },
-    5: { subject: "Биология", teacher: "Лебедев К.И.", room: "109" },
-    6: { subject: "Химия", teacher: "Фёдорова Т.В.", room: "310" },
+    1: { subject: "Математика",   teacher: "Иванов А.П.",   room: "214" },
+    2: { subject: "Русский язык", teacher: "Петрова О.С.",  room: "118" },
+    3: { subject: "Окружающий мир", teacher: "Лебедев К.И.", room: "109" },
+    4: { subject: "Чтение",       teacher: "Петрова О.С.",  room: "118" },
+    5: { subject: "Физкультура",  teacher: "Морозов Е.А.",  room: "Спортзал" },
   },
   "Вт": {
-    1: { subject: "Литература", teacher: "Петрова О.С.", room: "118" },
-    2: { subject: "Алгебра", teacher: "Иванов А.П.", room: "214", conflict: true },
-    3: { subject: "Физкультура", teacher: "Морозов Е.А.", room: "Спортзал" },
-    4: { subject: "Физика", teacher: "Козлов Д.В.", room: "307" },
-    5: { subject: "Химия", teacher: "Фёдорова Т.В.", room: "310" },
-    7: { subject: "Информатика", teacher: "Новикова А.Р.", room: "401" },
+    1: { subject: "Русский язык", teacher: "Петрова О.С.",  room: "118" },
+    2: { subject: "Математика",   teacher: "Иванов А.П.",   room: "214" },
+    3: { subject: "Рисование",    teacher: "Орлова В.С.",   room: "220" },
+    4: { subject: "Музыка",       teacher: "Тихонов П.А.",  room: "Актовый зал" },
+    5: { subject: "Чтение",       teacher: "Петрова О.С.",  room: "118" },
   },
   "Ср": {
-    1: { subject: "Математика", teacher: "Иванов А.П.", room: "214" },
-    2: { subject: "Биология", teacher: "Лебедев К.И.", room: "109" },
-    3: { subject: "Русский язык", teacher: "Петрова О.С.", room: "118" },
-    4: { subject: "История", teacher: "Смирнова Н.А.", room: "205" },
-    5: { subject: "Информатика", teacher: "Новикова А.Р.", room: "401" },
-    6: { subject: "Физкультура", teacher: "Морозов Е.А.", room: "Спортзал" },
+    1: { subject: "Математика",   teacher: "Иванов А.П.",   room: "214" },
+    2: { subject: "Окружающий мир", teacher: "Лебедев К.И.", room: "109" },
+    3: { subject: "Русский язык", teacher: "Петрова О.С.",  room: "118" },
+    4: { subject: "Физкультура",  teacher: "Морозов Е.А.",  room: "Спортзал" },
+    5: { subject: "Технология",   teacher: "Орлова В.С.",   room: "220" },
   },
   "Чт": {
-    1: { subject: "Алгебра", teacher: "Иванов А.П.", room: "214" },
-    2: { subject: "Физика", teacher: "Козлов Д.В.", room: "307" },
-    3: { subject: "Литература", teacher: "Петрова О.С.", room: "118" },
-    4: { subject: "Химия", teacher: "Фёдорова Т.В.", room: "310", conflict: true },
-    5: { subject: "Биология", teacher: "Лебедев К.И.", room: "109" },
-    6: { subject: "Математика", teacher: "Иванов А.П.", room: "214" },
+    1: { subject: "Чтение",       teacher: "Петрова О.С.",  room: "118" },
+    2: { subject: "Математика",   teacher: "Иванов А.П.",   room: "214" },
+    3: { subject: "Русский язык", teacher: "Петрова О.С.",  room: "118" },
+    4: { subject: "Музыка",       teacher: "Тихонов П.А.",  room: "Актовый зал" },
+    5: { subject: "Рисование",    teacher: "Орлова В.С.",   room: "220" },
   },
   "Пт": {
-    1: { subject: "Русский язык", teacher: "Петрова О.С.", room: "118" },
-    2: { subject: "История", teacher: "Смирнова Н.А.", room: "205" },
-    3: { subject: "Информатика", teacher: "Новикова А.Р.", room: "401" },
-    4: { subject: "Физкультура", teacher: "Морозов Е.А.", room: "Спортзал" },
-    5: { subject: "Алгебра", teacher: "Иванов А.П.", room: "214" },
+    1: { subject: "Русский язык", teacher: "Петрова О.С.",  room: "118" },
+    2: { subject: "Математика",   teacher: "Иванов А.П.",   room: "214" },
+    3: { subject: "Окружающий мир", teacher: "Лебедев К.И.", room: "109" },
+    4: { subject: "Физкультура",  teacher: "Морозов Е.А.",  room: "Спортзал" },
+    5: { subject: "Технология",   teacher: "Орлова В.С.",   room: "220" },
   },
 };
+
+const SCHEDULE_MIDDLE: WeekSchedule = {
+  "Пн": {
+    1: { subject: "Математика",   teacher: "Иванов А.П.",   room: "214" },
+    2: { subject: "Русский язык", teacher: "Петрова О.С.",  room: "118" },
+    3: { subject: "История",      teacher: "Смирнова Н.А.", room: "205" },
+    4: { subject: "Биология",     teacher: "Лебедев К.И.",  room: "109" },
+    5: { subject: "Физкультура",  teacher: "Морозов Е.А.",  room: "Спортзал" },
+    6: { subject: "Английский",   teacher: "Власова Е.И.",  room: "115" },
+  },
+  "Вт": {
+    1: { subject: "Литература",   teacher: "Петрова О.С.",  room: "118" },
+    2: { subject: "Алгебра",      teacher: "Иванов А.П.",   room: "214", conflict: true },
+    3: { subject: "Физкультура",  teacher: "Морозов Е.А.",  room: "Спортзал" },
+    4: { subject: "Химия",        teacher: "Фёдорова Т.В.", room: "310" },
+    5: { subject: "Английский",   teacher: "Власова Е.И.",  room: "115" },
+    6: { subject: "Информатика",  teacher: "Новикова А.Р.", room: "401" },
+  },
+  "Ср": {
+    1: { subject: "Алгебра",      teacher: "Иванов А.П.",   room: "214" },
+    2: { subject: "Биология",     teacher: "Лебедев К.И.",  room: "109" },
+    3: { subject: "Русский язык", teacher: "Петрова О.С.",  room: "118" },
+    4: { subject: "История",      teacher: "Смирнова Н.А.", room: "205" },
+    5: { subject: "Информатика",  teacher: "Новикова А.Р.", room: "401" },
+    6: { subject: "Физкультура",  teacher: "Морозов Е.А.",  room: "Спортзал" },
+  },
+  "Чт": {
+    1: { subject: "Математика",   teacher: "Иванов А.П.",   room: "214" },
+    2: { subject: "Химия",        teacher: "Фёдорова Т.В.", room: "310", conflict: true },
+    3: { subject: "Литература",   teacher: "Петрова О.С.",  room: "118" },
+    4: { subject: "Английский",   teacher: "Власова Е.И.",  room: "115" },
+    5: { subject: "Биология",     teacher: "Лебедев К.И.",  room: "109" },
+    6: { subject: "История",      teacher: "Смирнова Н.А.", room: "205" },
+  },
+  "Пт": {
+    1: { subject: "Русский язык", teacher: "Петрова О.С.",  room: "118" },
+    2: { subject: "Алгебра",      teacher: "Иванов А.П.",   room: "214" },
+    3: { subject: "Информатика",  teacher: "Новикова А.Р.", room: "401" },
+    4: { subject: "Химия",        teacher: "Фёдорова Т.В.", room: "310" },
+    5: { subject: "Английский",   teacher: "Власова Е.И.",  room: "115" },
+    6: { subject: "Физкультура",  teacher: "Морозов Е.А.",  room: "Спортзал" },
+  },
+};
+
+const SCHEDULE_SENIOR: WeekSchedule = {
+  "Пн": {
+    1: { subject: "Алгебра",      teacher: "Иванов А.П.",   room: "214" },
+    2: { subject: "Физика",       teacher: "Козлов Д.В.",   room: "307" },
+    3: { subject: "История",      teacher: "Смирнова Н.А.", room: "205", conflict: true },
+    4: { subject: "Химия",        teacher: "Фёдорова Т.В.", room: "310" },
+    5: { subject: "Английский",   teacher: "Власова Е.И.",  room: "115" },
+    6: { subject: "Литература",   teacher: "Петрова О.С.",  room: "118" },
+    7: { subject: "Физкультура",  teacher: "Морозов Е.А.",  room: "Спортзал" },
+  },
+  "Вт": {
+    1: { subject: "Математика",   teacher: "Иванов А.П.",   room: "214", conflict: true },
+    2: { subject: "Русский язык", teacher: "Петрова О.С.",  room: "118" },
+    3: { subject: "Физика",       teacher: "Козлов Д.В.",   room: "307" },
+    4: { subject: "Обществознание", teacher: "Смирнова Н.А.", room: "205" },
+    5: { subject: "Информатика",  teacher: "Новикова А.Р.", room: "401" },
+    6: { subject: "Химия",        teacher: "Фёдорова Т.В.", room: "310" },
+    7: { subject: "Английский",   teacher: "Власова Е.И.",  room: "115" },
+  },
+  "Ср": {
+    1: { subject: "Алгебра",      teacher: "Иванов А.П.",   room: "214" },
+    2: { subject: "Литература",   teacher: "Петрова О.С.",  room: "118" },
+    3: { subject: "Биология",     teacher: "Лебедев К.И.",  room: "109" },
+    4: { subject: "История",      teacher: "Смирнова Н.А.", room: "205" },
+    5: { subject: "Физика",       teacher: "Козлов Д.В.",   room: "307" },
+    6: { subject: "Информатика",  teacher: "Новикова А.Р.", room: "401" },
+    7: { subject: "Физкультура",  teacher: "Морозов Е.А.",  room: "Спортзал" },
+  },
+  "Чт": {
+    1: { subject: "Русский язык", teacher: "Петрова О.С.",  room: "118" },
+    2: { subject: "Математика",   teacher: "Иванов А.П.",   room: "214" },
+    3: { subject: "Химия",        teacher: "Фёдорова Т.В.", room: "310" },
+    4: { subject: "Обществознание", teacher: "Смирнова Н.А.", room: "205" },
+    5: { subject: "Английский",   teacher: "Власова Е.И.",  room: "115" },
+    6: { subject: "Биология",     teacher: "Лебедев К.И.",  room: "109" },
+    7: { subject: "Алгебра",      teacher: "Иванов А.П.",   room: "214" },
+  },
+  "Пт": {
+    1: { subject: "Физика",       teacher: "Козлов Д.В.",   room: "307" },
+    2: { subject: "История",      teacher: "Смирнова Н.А.", room: "205" },
+    3: { subject: "Литература",   teacher: "Петрова О.С.",  room: "118" },
+    4: { subject: "Информатика",  teacher: "Новикова А.Р.", room: "401" },
+    5: { subject: "Физкультура",  teacher: "Морозов Е.А.",  room: "Спортзал" },
+    6: { subject: "Математика",   teacher: "Иванов А.П.",   room: "214" },
+    7: { subject: "Английский",   teacher: "Власова Е.И.",  room: "115" },
+  },
+};
+
+function getScheduleByGrade(grade: number): WeekSchedule {
+  if (grade <= 4) return SCHEDULE_JUNIOR;
+  if (grade <= 8) return SCHEDULE_MIDDLE;
+  return SCHEDULE_SENIOR;
+}
 
 const HEAT_DATA = [
   [92, 85, 78, 90, 45],
@@ -108,16 +206,23 @@ const NAV_ITEMS = [
 ];
 
 const SUBJECT_COLORS: Record<string, string> = {
-  "Математика": "border-l-cyan-400 bg-cyan-400/8",
-  "Алгебра": "border-l-cyan-400 bg-cyan-400/8",
-  "Русский язык": "border-l-violet-400 bg-violet-400/8",
-  "Литература": "border-l-violet-400 bg-violet-400/8",
-  "Физика": "border-l-blue-400 bg-blue-400/8",
-  "История": "border-l-amber-400 bg-amber-400/8",
-  "Биология": "border-l-green-400 bg-green-400/8",
-  "Химия": "border-l-rose-400 bg-rose-400/8",
-  "Физкультура": "border-l-orange-400 bg-orange-400/8",
-  "Информатика": "border-l-purple-400 bg-purple-400/8",
+  "Математика":      "border-l-cyan-400 bg-cyan-400/8",
+  "Алгебра":         "border-l-cyan-400 bg-cyan-400/8",
+  "Русский язык":    "border-l-violet-400 bg-violet-400/8",
+  "Литература":      "border-l-violet-400 bg-violet-400/8",
+  "Физика":          "border-l-blue-400 bg-blue-400/8",
+  "История":         "border-l-amber-400 bg-amber-400/8",
+  "Биология":        "border-l-green-400 bg-green-400/8",
+  "Химия":           "border-l-rose-400 bg-rose-400/8",
+  "Физкультура":     "border-l-orange-400 bg-orange-400/8",
+  "Информатика":     "border-l-purple-400 bg-purple-400/8",
+  "Английский":      "border-l-sky-400 bg-sky-400/8",
+  "Обществознание":  "border-l-teal-400 bg-teal-400/8",
+  "Окружающий мир":  "border-l-lime-400 bg-lime-400/8",
+  "Чтение":          "border-l-pink-400 bg-pink-400/8",
+  "Рисование":       "border-l-fuchsia-400 bg-fuchsia-400/8",
+  "Музыка":          "border-l-yellow-400 bg-yellow-400/8",
+  "Технология":      "border-l-stone-400 bg-stone-400/8",
 };
 
 function heatColor(val: number) {
@@ -192,6 +297,18 @@ const ALL_CLASSES_BY_GRADE: Record<number, string[]> = {
   11: ["11А","11Б","11В","11Г","11Д"],
 };
 
+const GRADE_LABELS: Record<string, string> = {
+  junior: "1–4 кл. · Начальная школа",
+  middle: "5–8 кл. · Средняя школа",
+  senior: "9–11 кл. · Старшая школа",
+};
+
+function getGradeGroup(grade: number): string {
+  if (grade <= 4) return "junior";
+  if (grade <= 8) return "middle";
+  return "senior";
+}
+
 function ScheduleSection() {
   const [selectedGrade, setSelectedGrade] = useState(9);
   const [selectedClass, setSelectedClass] = useState("9А");
@@ -202,9 +319,22 @@ function ScheduleSection() {
     setSelectedClass(`${g}А`);
   };
 
+  const scheduleData = getScheduleByGrade(selectedGrade);
+  const gradeGroup = getGradeGroup(selectedGrade);
+  const maxPeriods = selectedGrade <= 4 ? 5 : selectedGrade <= 8 ? 6 : 7;
+  const visiblePeriods = PERIODS.slice(0, maxPeriods);
+
   return (
     <div className="animate-fade-in opacity-0" style={{ animationFillMode: "forwards" }}>
-      <SectionHeader title="Расписание уроков" subtitle="Еженедельная сетка занятий" badge={`Класс ${selectedClass}`} />
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-xl font-bold text-white/90">Расписание уроков</h2>
+          <p className="text-sm text-white/40 mt-0.5">{GRADE_LABELS[gradeGroup]}</p>
+        </div>
+        <span className="px-3 py-1 rounded-full bg-cyan-400/10 border border-cyan-400/20 text-cyan-400 text-xs font-mono font-medium">
+          Класс {selectedClass} · {maxPeriods} уроков
+        </span>
+      </div>
 
       {/* Выбор параллели */}
       <div className="flex gap-1.5 mb-3 flex-wrap">
@@ -250,14 +380,14 @@ function ScheduleSection() {
             </tr>
           </thead>
           <tbody>
-            {PERIODS.map((period, i) => (
+            {visiblePeriods.map((period, i) => (
               <tr key={period.num} className={`border-b border-white/4 ${i % 2 === 0 ? "bg-white/1" : ""}`}>
                 <td className="p-3">
                   <div className="text-white/70 text-sm font-mono font-medium">{period.num}</div>
                   <div className="text-white/25 text-xs">{period.time}</div>
                 </td>
                 {DAYS.map(day => {
-                  const lesson = SCHEDULE_DATA[day]?.[period.num];
+                  const lesson = scheduleData[day]?.[period.num];
                   const colorClass = lesson ? (SUBJECT_COLORS[lesson.subject] || "border-l-slate-400 bg-slate-400/8") : "";
                   return (
                     <td key={day} className="p-1.5">
