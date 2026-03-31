@@ -178,15 +178,54 @@ function SectionHeader({ title, subtitle, badge }: { title: string; subtitle?: s
   );
 }
 
+const ALL_CLASSES_BY_GRADE: Record<number, string[]> = {
+  1:  ["1А","1Б","1В","1Г","1Д"],
+  2:  ["2А","2Б","2В","2Г","2Д"],
+  3:  ["3А","3Б","3В","3Г","3Д"],
+  4:  ["4А","4Б","4В","4Г","4Д"],
+  5:  ["5А","5Б","5В","5Г","5Д"],
+  6:  ["6А","6Б","6В","6Г","6Д"],
+  7:  ["7А","7Б","7В","7Г","7Д"],
+  8:  ["8А","8Б","8В","8Г","8Д"],
+  9:  ["9А","9Б","9В","9Г","9Д"],
+  10: ["10А","10Б","10В","10Г","10Д"],
+  11: ["11А","11Б","11В","11Г","11Д"],
+};
+
 function ScheduleSection() {
+  const [selectedGrade, setSelectedGrade] = useState(9);
   const [selectedClass, setSelectedClass] = useState("9А");
-  const classes = ["8А", "8Б", "9А", "9Б", "10А", "10Б", "11А", "11В"];
+  const grades = Object.keys(ALL_CLASSES_BY_GRADE).map(Number);
+
+  const handleGradeClick = (g: number) => {
+    setSelectedGrade(g);
+    setSelectedClass(`${g}А`);
+  };
 
   return (
     <div className="animate-fade-in opacity-0" style={{ animationFillMode: "forwards" }}>
       <SectionHeader title="Расписание уроков" subtitle="Еженедельная сетка занятий" badge={`Класс ${selectedClass}`} />
+
+      {/* Выбор параллели */}
+      <div className="flex gap-1.5 mb-3 flex-wrap">
+        {grades.map(g => (
+          <button
+            key={g}
+            onClick={() => handleGradeClick(g)}
+            className={`px-3 py-1 rounded-lg text-xs font-mono font-semibold transition-all duration-200 ${
+              selectedGrade === g
+                ? "bg-violet-500/20 text-violet-300 border border-violet-400/35"
+                : "bg-white/4 text-white/35 border border-white/6 hover:border-white/15 hover:text-white/55"
+            }`}
+          >
+            {g} кл.
+          </button>
+        ))}
+      </div>
+
+      {/* Выбор класса в параллели */}
       <div className="flex gap-2 mb-5 flex-wrap">
-        {classes.map(cls => (
+        {ALL_CLASSES_BY_GRADE[selectedGrade].map(cls => (
           <button
             key={cls}
             onClick={() => setSelectedClass(cls)}
