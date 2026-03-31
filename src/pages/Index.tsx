@@ -164,15 +164,81 @@ const HEAT_DATA = [
   [25, 35, 45, 50, 15],
 ];
 
-const TEACHERS = [
-  { id: 1, name: "Иванов А.П.", subject: "Математика, Алгебра", load: 34, maxLoad: 40, role: "Учитель", classes: ["9А", "10Б", "11В"], status: "active" },
-  { id: 2, name: "Петрова О.С.", subject: "Русский язык, Лит-ра", load: 28, maxLoad: 36, role: "Учитель", classes: ["8А", "9Б", "10А"], status: "active" },
-  { id: 3, name: "Козлов Д.В.", subject: "Физика", load: 22, maxLoad: 36, role: "Учитель", classes: ["9А", "10А", "11А"], status: "active" },
-  { id: 4, name: "Смирнова Н.А.", subject: "История", load: 18, maxLoad: 36, role: "Учитель", classes: ["8Б", "9Б", "10Б"], status: "leave" },
-  { id: 5, name: "Лебедев К.И.", subject: "Биология", load: 20, maxLoad: 36, role: "Учитель", classes: ["8А", "9А", "10Б"], status: "active" },
-  { id: 6, name: "Фёдорова Т.В.", subject: "Химия", load: 24, maxLoad: 36, role: "Учитель", classes: ["9А", "10А", "11Б"], status: "active" },
-  { id: 7, name: "Морозов Е.А.", subject: "Физкультура", load: 30, maxLoad: 40, role: "Учитель", classes: ["8А", "8Б", "9А", "9Б"], status: "active" },
-  { id: 8, name: "Новикова А.Р.", subject: "Информатика", load: 16, maxLoad: 36, role: "Учитель", classes: ["10А", "10Б", "11А"], status: "active" },
+type Teacher = { id: number; name: string; subject: string; load: number; maxLoad: number; role: string; classes: string[]; status: string; email: string; phone: string };
+
+const INITIAL_TEACHERS: Teacher[] = [
+  { id:  1, name: "Иванов А.П.",      subject: "Математика, Алгебра",    load: 34, maxLoad: 40, role: "Учитель", classes: ["9А","10Б","11В"],       status: "active", email: "ivanov@school.ru",      phone: "+7 900 111-11-01" },
+  { id:  2, name: "Петрова О.С.",     subject: "Русский язык, Лит-ра",   load: 28, maxLoad: 36, role: "Учитель", classes: ["8А","9Б","10А"],        status: "active", email: "petrova@school.ru",     phone: "+7 900 111-11-02" },
+  { id:  3, name: "Козлов Д.В.",      subject: "Физика",                 load: 22, maxLoad: 36, role: "Учитель", classes: ["9А","10А","11А"],       status: "active", email: "kozlov@school.ru",      phone: "+7 900 111-11-03" },
+  { id:  4, name: "Смирнова Н.А.",    subject: "История",                load: 18, maxLoad: 36, role: "Учитель", classes: ["8Б","9Б","10Б"],        status: "leave",  email: "smirnova@school.ru",    phone: "+7 900 111-11-04" },
+  { id:  5, name: "Лебедев К.И.",     subject: "Биология",               load: 20, maxLoad: 36, role: "Учитель", classes: ["8А","9А","10Б"],        status: "active", email: "lebedev@school.ru",     phone: "+7 900 111-11-05" },
+  { id:  6, name: "Фёдорова Т.В.",    subject: "Химия",                  load: 24, maxLoad: 36, role: "Учитель", classes: ["9А","10А","11Б"],       status: "active", email: "fedorova@school.ru",    phone: "+7 900 111-11-06" },
+  { id:  7, name: "Морозов Е.А.",     subject: "Физкультура",            load: 30, maxLoad: 40, role: "Учитель", classes: ["8А","8Б","9А","9Б"],    status: "active", email: "morozov@school.ru",     phone: "+7 900 111-11-07" },
+  { id:  8, name: "Новикова А.Р.",    subject: "Информатика",            load: 16, maxLoad: 36, role: "Учитель", classes: ["10А","10Б","11А"],      status: "active", email: "novikova@school.ru",    phone: "+7 900 111-11-08" },
+  { id:  9, name: "Власова Е.И.",     subject: "Английский язык",        load: 32, maxLoad: 36, role: "Учитель", classes: ["9А","9Б","10А","11А"],  status: "active", email: "vlasova@school.ru",     phone: "+7 900 111-11-09" },
+  { id: 10, name: "Орлова В.С.",      subject: "Рисование, Технология",  load: 26, maxLoad: 36, role: "Учитель", classes: ["1А","2Б","3В","4Г"],   status: "active", email: "orlova@school.ru",      phone: "+7 900 111-11-10" },
+  { id: 11, name: "Тихонов П.А.",     subject: "Музыка",                 load: 22, maxLoad: 36, role: "Учитель", classes: ["1А","2А","3А","4А","5А"],status:"active", email: "tihonov@school.ru",     phone: "+7 900 111-11-11" },
+  { id: 12, name: "Белова И.С.",      subject: "Начальные классы",       load: 36, maxLoad: 40, role: "Учитель", classes: ["1А"],                   status: "active", email: "belova@school.ru",      phone: "+7 900 111-11-12" },
+  { id: 13, name: "Соколов А.Г.",     subject: "Математика",             load: 26, maxLoad: 36, role: "Учитель", classes: ["5А","6Б","7В"],         status: "active", email: "sokolov@school.ru",     phone: "+7 900 111-11-13" },
+  { id: 14, name: "Кузнецов П.В.",    subject: "Физика, Математика",     load: 30, maxLoad: 36, role: "Учитель", classes: ["8В","9В","10В"],        status: "active", email: "kuznecov@school.ru",    phone: "+7 900 111-11-14" },
+  { id: 15, name: "Попова Л.Г.",      subject: "Русский язык",           load: 28, maxLoad: 36, role: "Учитель", classes: ["5Б","6А","7А"],         status: "active", email: "popova@school.ru",      phone: "+7 900 111-11-15" },
+  { id: 16, name: "Николаев В.П.",    subject: "История, Обществознание",load: 24, maxLoad: 36, role: "Учитель", classes: ["7Б","8В","9В"],         status: "active", email: "nikolaev@school.ru",    phone: "+7 900 111-11-16" },
+  { id: 17, name: "Захарова М.Д.",    subject: "Химия, Биология",        load: 20, maxLoad: 36, role: "Учитель", classes: ["6В","7Г","8Г"],         status: "active", email: "zaharova@school.ru",    phone: "+7 900 111-11-17" },
+  { id: 18, name: "Семёнов Г.А.",     subject: "Физкультура",            load: 34, maxLoad: 40, role: "Учитель", classes: ["5В","6Г","7Д"],         status: "active", email: "semenov@school.ru",     phone: "+7 900 111-11-18" },
+  { id: 19, name: "Волкова Р.Н.",     subject: "Английский язык",        load: 26, maxLoad: 36, role: "Учитель", classes: ["5Г","6Д","7А"],         status: "active", email: "volkova@school.ru",     phone: "+7 900 111-11-19" },
+  { id: 20, name: "Яковлев Д.С.",     subject: "Информатика",            load: 18, maxLoad: 36, role: "Учитель", classes: ["6А","7Б","8А"],         status: "active", email: "yakovlev@school.ru",    phone: "+7 900 111-11-20" },
+  { id: 21, name: "Громова Т.П.",     subject: "Начальные классы",       load: 36, maxLoad: 40, role: "Учитель", classes: ["1Б"],                   status: "active", email: "gromova@school.ru",     phone: "+7 900 111-11-21" },
+  { id: 22, name: "Романов А.К.",     subject: "Начальные классы",       load: 36, maxLoad: 40, role: "Учитель", classes: ["1В"],                   status: "active", email: "romanov@school.ru",     phone: "+7 900 111-11-22" },
+  { id: 23, name: "Антонова Е.В.",    subject: "Начальные классы",       load: 36, maxLoad: 40, role: "Учитель", classes: ["1Г"],                   status: "leave",  email: "antonova@school.ru",    phone: "+7 900 111-11-23" },
+  { id: 24, name: "Дмитриев О.Л.",    subject: "Начальные классы",       load: 36, maxLoad: 40, role: "Учитель", classes: ["1Д"],                   status: "active", email: "dmitriev@school.ru",    phone: "+7 900 111-11-24" },
+  { id: 25, name: "Ершова К.Б.",      subject: "Начальные классы",       load: 36, maxLoad: 40, role: "Учитель", classes: ["2А"],                   status: "active", email: "ershova@school.ru",     phone: "+7 900 111-11-25" },
+  { id: 26, name: "Фомина Л.В.",      subject: "Начальные классы",       load: 36, maxLoad: 40, role: "Учитель", classes: ["2Б"],                   status: "active", email: "fomina@school.ru",      phone: "+7 900 111-11-26" },
+  { id: 27, name: "Гусев Н.А.",       subject: "Начальные классы",       load: 36, maxLoad: 40, role: "Учитель", classes: ["2В"],                   status: "active", email: "gusev@school.ru",       phone: "+7 900 111-11-27" },
+  { id: 28, name: "Калинина О.П.",    subject: "Начальные классы",       load: 36, maxLoad: 40, role: "Учитель", classes: ["2Г"],                   status: "active", email: "kalinina@school.ru",    phone: "+7 900 111-11-28" },
+  { id: 29, name: "Лазарев В.К.",     subject: "Начальные классы",       load: 36, maxLoad: 40, role: "Учитель", classes: ["2Д"],                   status: "active", email: "lazarev@school.ru",     phone: "+7 900 111-11-29" },
+  { id: 30, name: "Медведева Г.С.",   subject: "Начальные классы",       load: 36, maxLoad: 40, role: "Учитель", classes: ["3А"],                   status: "active", email: "medvedeva@school.ru",   phone: "+7 900 111-11-30" },
+  { id: 31, name: "Новикова С.П.",    subject: "Начальные классы",       load: 36, maxLoad: 40, role: "Учитель", classes: ["3Б"],                   status: "active", email: "novikovas@school.ru",   phone: "+7 900 111-11-31" },
+  { id: 32, name: "Осипова Е.А.",     subject: "Начальные классы",       load: 36, maxLoad: 40, role: "Учитель", classes: ["3В"],                   status: "active", email: "osipova@school.ru",     phone: "+7 900 111-11-32" },
+  { id: 33, name: "Павлов И.Д.",      subject: "Начальные классы",       load: 36, maxLoad: 40, role: "Учитель", classes: ["3Г"],                   status: "active", email: "pavlov@school.ru",      phone: "+7 900 111-11-33" },
+  { id: 34, name: "Рябова М.К.",      subject: "Начальные классы",       load: 36, maxLoad: 40, role: "Учитель", classes: ["3Д"],                   status: "leave",  email: "ryabova@school.ru",     phone: "+7 900 111-11-34" },
+  { id: 35, name: "Сорокин А.В.",     subject: "Начальные классы",       load: 36, maxLoad: 40, role: "Учитель", classes: ["4А"],                   status: "active", email: "sorokin@school.ru",     phone: "+7 900 111-11-35" },
+  { id: 36, name: "Тарасова Н.И.",    subject: "Начальные классы",       load: 36, maxLoad: 40, role: "Учитель", classes: ["4Б"],                   status: "active", email: "tarasova@school.ru",    phone: "+7 900 111-11-36" },
+  { id: 37, name: "Устинов Г.В.",     subject: "Начальные классы",       load: 36, maxLoad: 40, role: "Учитель", classes: ["4В"],                   status: "active", email: "ustinov@school.ru",     phone: "+7 900 111-11-37" },
+  { id: 38, name: "Филиппов К.Н.",    subject: "Начальные классы",       load: 36, maxLoad: 40, role: "Учитель", classes: ["4Г"],                   status: "active", email: "filippov@school.ru",    phone: "+7 900 111-11-38" },
+  { id: 39, name: "Харитонов Д.М.",   subject: "Начальные классы",       load: 36, maxLoad: 40, role: "Учитель", classes: ["4Д"],                   status: "active", email: "haritonov@school.ru",   phone: "+7 900 111-11-39" },
+  { id: 40, name: "Цветкова А.Г.",    subject: "Литература, Русский яз.",load: 28, maxLoad: 36, role: "Учитель", classes: ["5А","6А"],              status: "active", email: "cvetkova@school.ru",    phone: "+7 900 111-11-40" },
+  { id: 41, name: "Чернов Б.П.",      subject: "Алгебра, Геометрия",     load: 32, maxLoad: 40, role: "Учитель", classes: ["7А","8А","9Г"],         status: "active", email: "chernov@school.ru",     phone: "+7 900 111-11-41" },
+  { id: 42, name: "Шестакова И.Н.",   subject: "Биология",               load: 22, maxLoad: 36, role: "Учитель", classes: ["5А","5Б","6А"],         status: "active", email: "shestakova@school.ru",  phone: "+7 900 111-11-42" },
+  { id: 43, name: "Щербаков Р.Д.",    subject: "История",                load: 20, maxLoad: 36, role: "Учитель", classes: ["5В","5Г","6Б"],         status: "active", email: "sherbakov@school.ru",   phone: "+7 900 111-11-43" },
+  { id: 44, name: "Эйдельман Г.С.",   subject: "Английский язык",        load: 24, maxLoad: 36, role: "Учитель", classes: ["8Г","8Д","9Д"],         status: "active", email: "eydelman@school.ru",    phone: "+7 900 111-11-44" },
+  { id: 45, name: "Юрьева Т.К.",      subject: "Химия",                  load: 18, maxLoad: 36, role: "Учитель", classes: ["10Г","10Д","11Г"],      status: "active", email: "yurieva@school.ru",     phone: "+7 900 111-11-45" },
+  { id: 46, name: "Яшина Е.Л.",       subject: "Физика",                 load: 26, maxLoad: 36, role: "Учитель", classes: ["7Д","8Д","9Д"],         status: "active", email: "yashina@school.ru",     phone: "+7 900 111-11-46" },
+  { id: 47, name: "Абрамов С.Н.",     subject: "Физкультура",            load: 36, maxLoad: 40, role: "Учитель", classes: ["10В","10Г","11В"],      status: "active", email: "abramov@school.ru",     phone: "+7 900 111-11-47" },
+  { id: 48, name: "Баранова К.О.",    subject: "Информатика",            load: 20, maxLoad: 36, role: "Учитель", classes: ["5Д","6В","7В"],         status: "active", email: "baranova@school.ru",    phone: "+7 900 111-11-48" },
+  { id: 49, name: "Виноградов М.Л.",  subject: "Обществознание, Право",  load: 22, maxLoad: 36, role: "Учитель", classes: ["10А","10Б","11А"],      status: "active", email: "vinogradov@school.ru",  phone: "+7 900 111-11-49" },
+  { id: 50, name: "Герасимова Л.А.",  subject: "Музыка",                 load: 24, maxLoad: 36, role: "Учитель", classes: ["5А","5Б","6А","6Б"],    status: "active", email: "gerasimova@school.ru",  phone: "+7 900 111-11-50" },
+  { id: 51, name: "Денисов К.В.",     subject: "Рисование, ИЗО",         load: 20, maxLoad: 36, role: "Учитель", classes: ["5В","5Г","6В","6Г"],    status: "active", email: "denisov@school.ru",     phone: "+7 900 111-11-51" },
+  { id: 52, name: "Егорова Н.С.",     subject: "Технология",             load: 18, maxLoad: 36, role: "Учитель", classes: ["7А","7Б","8А","8Б"],    status: "active", email: "egorova@school.ru",     phone: "+7 900 111-11-52" },
+  { id: 53, name: "Жуков П.И.",       subject: "ОБЖ",                    load: 16, maxLoad: 36, role: "Учитель", classes: ["8А","9А","10А","11А"],  status: "active", email: "zhukov@school.ru",      phone: "+7 900 111-11-53" },
+  { id: 54, name: "Зайцева О.В.",     subject: "Литература",             load: 24, maxLoad: 36, role: "Учитель", classes: ["7В","8В","9В"],         status: "active", email: "zayceva@school.ru",     phone: "+7 900 111-11-54" },
+  { id: 55, name: "Иванова Г.Л.",     subject: "Русский язык",           load: 26, maxLoad: 36, role: "Учитель", classes: ["7Г","8Г","9Г"],         status: "active", email: "ivanovag@school.ru",    phone: "+7 900 111-11-55" },
+  { id: 56, name: "Кириллов Д.Г.",    subject: "Геометрия",              load: 22, maxLoad: 36, role: "Учитель", classes: ["10В","10Г","11В","11Г"],status: "active", email: "kirillov@school.ru",    phone: "+7 900 111-11-56" },
+  { id: 57, name: "Логинова П.А.",    subject: "Английский язык",        load: 28, maxLoad: 36, role: "Учитель", classes: ["6Д","7Д","8Д"],         status: "active", email: "loginova@school.ru",    phone: "+7 900 111-11-57" },
+  { id: 58, name: "Макаров В.Б.",     subject: "Физкультура",            load: 34, maxLoad: 40, role: "Учитель", classes: ["6А","6Б","7А","7Б"],    status: "active", email: "makarov@school.ru",     phone: "+7 900 111-11-58" },
+  { id: 59, name: "Некрасов А.О.",    subject: "История, Обществознание",load: 20, maxLoad: 36, role: "Учитель", classes: ["11Б","11В","11Г"],      status: "active", email: "nekrasov@school.ru",    phone: "+7 900 111-11-59" },
+  { id: 60, name: "Орлов В.С.",       subject: "Математика, Физика",     load: 18, maxLoad: 36, role: "Учитель", classes: ["10Д","11Д"],            status: "active", email: "orlovvs@school.ru",     phone: "+7 900 111-11-60" },
+  { id: 61, name: "Панкратов Л.Д.",   subject: "Биология, Химия",        load: 22, maxLoad: 36, role: "Учитель", classes: ["9Б","9В","10Б"],        status: "active", email: "pankratov@school.ru",   phone: "+7 900 111-11-61" },
+  { id: 62, name: "Рогова С.А.",      subject: "Русский язык, Лит-ра",   load: 26, maxLoad: 36, role: "Учитель", classes: ["9Г","9Д","10Г"],        status: "active", email: "rogova@school.ru",      phone: "+7 900 111-11-62" },
+  { id: 63, name: "Савельев Н.И.",    subject: "Информатика",            load: 20, maxLoad: 36, role: "Учитель", classes: ["8В","9В","10В"],        status: "active", email: "saveliev@school.ru",    phone: "+7 900 111-11-63" },
+  { id: 64, name: "Титова К.С.",      subject: "Технология",             load: 18, maxLoad: 36, role: "Учитель", classes: ["9А","9Б","10А"],        status: "active", email: "titova@school.ru",      phone: "+7 900 111-11-64" },
+  { id: 65, name: "Уткин Г.П.",       subject: "ОБЖ",                    load: 16, maxLoad: 36, role: "Учитель", classes: ["8Б","9Б","10Б","11Б"],  status: "active", email: "utkin@school.ru",       phone: "+7 900 111-11-65" },
+  { id: 66, name: "Фёдоров К.Е.",     subject: "Физика",                 load: 24, maxLoad: 36, role: "Учитель", classes: ["9Г","9Д","10Г"],        status: "leave",  email: "fedorov@school.ru",     phone: "+7 900 111-11-66" },
+  { id: 67, name: "Хохлова В.Н.",     subject: "Английский язык",        load: 28, maxLoad: 36, role: "Учитель", classes: ["10В","10Г","11В"],      status: "active", email: "hohlov@school.ru",      phone: "+7 900 111-11-67" },
+  { id: 68, name: "Цыганков Б.А.",    subject: "Алгебра, Математика",    load: 30, maxLoad: 40, role: "Учитель", classes: ["10Д","11Д"],            status: "active", email: "cygankov@school.ru",    phone: "+7 900 111-11-68" },
+  { id: 69, name: "Чистякова И.О.",   subject: "История",                load: 22, maxLoad: 36, role: "Учитель", classes: ["6В","6Г","7В"],         status: "active", email: "chistyakova@school.ru", phone: "+7 900 111-11-69" },
+  { id: 70, name: "Шаповалов Г.С.",   subject: "Биология",               load: 20, maxLoad: 36, role: "Учитель", classes: ["11В","11Г","11Д"],      status: "active", email: "shapovalov@school.ru",  phone: "+7 900 111-11-70" },
+  { id: 71, name: "Щукина М.Р.",      subject: "Химия",                  load: 18, maxLoad: 36, role: "Учитель", classes: ["7Д","8Д","9Д"],         status: "active", email: "shukina@school.ru",     phone: "+7 900 111-11-71" },
+  { id: 72, name: "Юдин А.Б.",        subject: "Физкультура",            load: 32, maxLoad: 40, role: "Учитель", classes: ["11А","11Б","11В"],      status: "active", email: "yudin@school.ru",       phone: "+7 900 111-11-72" },
 ];
 
 const CONFLICTS = [
@@ -737,85 +803,213 @@ function ReportsSection() {
 }
 
 function TeachersSection() {
-  const [roleFilter, setRoleFilter] = useState("all");
+  const [teachers, setTeachers] = useState<Teacher[]>(INITIAL_TEACHERS);
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [search, setSearch] = useState("");
+  const [showAdd, setShowAdd] = useState(false);
+  const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [form, setForm] = useState({ name: "", subject: "", email: "", phone: "", load: "", maxLoad: "36", classes: "", status: "active" });
+  const [page, setPage] = useState(1);
+  const PER_PAGE = 12;
+
+  const filtered = teachers.filter(t => {
+    const matchStatus = statusFilter === "all" || t.status === statusFilter;
+    const q = search.toLowerCase();
+    const matchSearch = !q || t.name.toLowerCase().includes(q) || t.subject.toLowerCase().includes(q) || t.email.toLowerCase().includes(q);
+    return matchStatus && matchSearch;
+  });
+  const totalPages = Math.ceil(filtered.length / PER_PAGE);
+  const paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+
+  const handleAdd = () => {
+    if (!form.name.trim() || !form.subject.trim()) return;
+    const newT: Teacher = {
+      id: Date.now(),
+      name: form.name.trim(),
+      subject: form.subject.trim(),
+      email: form.email.trim(),
+      phone: form.phone.trim(),
+      load: parseInt(form.load) || 0,
+      maxLoad: parseInt(form.maxLoad) || 36,
+      role: "Учитель",
+      classes: form.classes.split(",").map(s => s.trim()).filter(Boolean),
+      status: form.status,
+    };
+    setTeachers(prev => [...prev, newT]);
+    setForm({ name: "", subject: "", email: "", phone: "", load: "", maxLoad: "36", classes: "", status: "active" });
+    setShowAdd(false);
+  };
+
+  const handleDelete = (id: number) => {
+    setTeachers(prev => prev.filter(t => t.id !== id));
+    setDeleteId(null);
+  };
+
+  const inCls = "w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white/85 placeholder-white/20 text-sm focus:outline-none focus:border-cyan-400/40 transition-colors";
 
   return (
     <div className="animate-fade-in opacity-0" style={{ animationFillMode: "forwards" }}>
-      <SectionHeader title="Управление учителями" subtitle="Нагрузка, компетенции и ролевые права" badge={`${TEACHERS.length} педагогов`} />
-      <div className="flex items-center gap-3 mb-6">
+      <SectionHeader title="Управление учителями" subtitle="Штат педагогов школы" badge={`${teachers.length} из 72`} />
+
+      {/* Toolbar */}
+      <div className="flex flex-wrap items-center gap-3 mb-5">
+        <div className="relative flex-1 min-w-48">
+          <Icon name="Search" size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+          <input
+            value={search}
+            onChange={e => { setSearch(e.target.value); setPage(1); }}
+            placeholder="Поиск по имени, предмету, email…"
+            className="w-full pl-9 pr-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/80 placeholder-white/25 text-sm focus:outline-none focus:border-cyan-400/30 transition-colors"
+          />
+        </div>
         <div className="flex gap-1">
-          {["all", "active", "leave"].map(f => (
-            <button
-              key={f}
-              onClick={() => setRoleFilter(f)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${roleFilter === f ? "bg-white/10 text-white border border-white/20" : "text-white/40 hover:text-white/60"}`}
-            >
-              {f === "all" ? "Все" : f === "active" ? "На работе" : "В отпуске"}
+          {[["all","Все"], ["active","На работе"], ["leave","В отпуске"]].map(([val, label]) => (
+            <button key={val} onClick={() => { setStatusFilter(val); setPage(1); }}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${statusFilter === val ? "bg-white/10 text-white border border-white/20" : "text-white/40 hover:text-white/60"}`}>
+              {label}
             </button>
           ))}
         </div>
-        <button className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-400/10 border border-cyan-400/20 text-cyan-400 text-xs font-medium hover:bg-cyan-400/15 transition-colors">
+        <button onClick={() => setShowAdd(true)}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-400/10 border border-cyan-400/20 text-cyan-400 text-xs font-medium hover:bg-cyan-400/15 transition-colors">
           <Icon name="UserPlus" size={13} />
           Добавить
         </button>
       </div>
-      <div className="space-y-3">
-        {TEACHERS.filter(t => roleFilter === "all" || t.status === roleFilter).map((t, i) => (
-          <div
-            key={t.id}
-            className="glass-card rounded-xl p-4 border border-white/6 hover:border-white/12 transition-all animate-fade-in opacity-0"
-            style={{ animationDelay: `${i * 60}ms`, animationFillMode: "forwards" }}
-          >
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500/25 to-cyan-500/20 flex items-center justify-center text-white/70 font-bold text-sm border border-white/10">
+
+      {/* Add form */}
+      {showAdd && (
+        <div className="glass-card rounded-xl p-5 border border-cyan-400/20 mb-5 animate-scale-in">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-white/80 font-semibold text-sm">Новый учитель</h3>
+            <button onClick={() => setShowAdd(false)} className="text-white/30 hover:text-white/60 transition-colors">
+              <Icon name="X" size={16} />
+            </button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+            <div>
+              <label className="block text-white/35 text-[10px] font-mono uppercase tracking-wider mb-1">ФИО *</label>
+              <input value={form.name} onChange={e => setForm(p => ({...p, name: e.target.value}))} placeholder="Иванов А.П." className={inCls} />
+            </div>
+            <div>
+              <label className="block text-white/35 text-[10px] font-mono uppercase tracking-wider mb-1">Предмет *</label>
+              <input value={form.subject} onChange={e => setForm(p => ({...p, subject: e.target.value}))} placeholder="Математика, Алгебра" className={inCls} />
+            </div>
+            <div>
+              <label className="block text-white/35 text-[10px] font-mono uppercase tracking-wider mb-1">Email</label>
+              <input value={form.email} onChange={e => setForm(p => ({...p, email: e.target.value}))} placeholder="teacher@school.ru" className={inCls} />
+            </div>
+            <div>
+              <label className="block text-white/35 text-[10px] font-mono uppercase tracking-wider mb-1">Телефон</label>
+              <input value={form.phone} onChange={e => setForm(p => ({...p, phone: e.target.value}))} placeholder="+7 900 000-00-00" className={inCls} />
+            </div>
+            <div>
+              <label className="block text-white/35 text-[10px] font-mono uppercase tracking-wider mb-1">Нагрузка / ч. в нед.</label>
+              <input value={form.load} onChange={e => setForm(p => ({...p, load: e.target.value}))} placeholder="24" className={inCls} />
+            </div>
+            <div>
+              <label className="block text-white/35 text-[10px] font-mono uppercase tracking-wider mb-1">Классы (через запятую)</label>
+              <input value={form.classes} onChange={e => setForm(p => ({...p, classes: e.target.value}))} placeholder="9А, 10Б, 11В" className={inCls} />
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <select value={form.status} onChange={e => setForm(p => ({...p, status: e.target.value}))}
+              className="px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white/70 text-sm focus:outline-none">
+              <option value="active">На работе</option>
+              <option value="leave">В отпуске</option>
+            </select>
+            <button onClick={handleAdd}
+              className="px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 text-white font-bold text-sm hover:opacity-90 transition-all">
+              Добавить в штат
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Confirm delete */}
+      {deleteId !== null && (
+        <div className="glass-card rounded-xl p-4 border border-red-400/25 mb-5 flex items-center gap-4 animate-scale-in">
+          <Icon name="AlertTriangle" size={18} className="text-red-400 flex-shrink-0" />
+          <span className="text-white/70 text-sm flex-1">Удалить учителя <strong className="text-white/90">{teachers.find(t => t.id === deleteId)?.name}</strong>?</span>
+          <button onClick={() => handleDelete(deleteId)} className="px-3 py-1.5 rounded-lg bg-red-500/15 border border-red-500/30 text-red-400 text-xs font-medium hover:bg-red-500/25 transition-colors">Удалить</button>
+          <button onClick={() => setDeleteId(null)} className="px-3 py-1.5 rounded-lg text-white/30 text-xs hover:text-white/60 transition-colors">Отмена</button>
+        </div>
+      )}
+
+      {/* List */}
+      <div className="space-y-2">
+        {paginated.map((t, i) => (
+          <div key={t.id} className="glass-card rounded-xl p-4 border border-white/6 hover:border-white/12 transition-all animate-fade-in opacity-0"
+            style={{ animationDelay: `${i * 30}ms`, animationFillMode: "forwards" }}>
+            <div className="flex items-center gap-3">
+              <div className="relative flex-shrink-0">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500/25 to-cyan-500/20 flex items-center justify-center text-white/70 font-bold text-xs border border-white/10">
                   {t.name.split(" ")[0][0]}{t.name.split(" ")[1]?.[0]}
                 </div>
-                <span className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-background ${t.status === "active" ? "bg-emerald-400" : "bg-orange-400"}`} />
+                <span className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-background ${t.status === "active" ? "bg-emerald-400" : "bg-orange-400"}`} />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="text-white/85 font-semibold text-sm">{t.name}</span>
-                  <span className="text-white/25 text-xs px-1.5 py-0.5 rounded bg-white/5 font-mono">{t.role}</span>
                 </div>
-                <div className="text-white/40 text-xs mt-0.5 truncate">{t.subject}</div>
+                <div className="text-white/35 text-xs truncate">{t.subject}</div>
+                {t.email && <div className="text-white/20 text-[10px] font-mono truncate">{t.email}</div>}
               </div>
-              <div className="hidden md:flex items-center gap-1 flex-shrink-0">
+              <div className="hidden lg:flex items-center gap-1 flex-shrink-0">
                 {t.classes.slice(0, 3).map(cls => (
                   <span key={cls} className="px-1.5 py-0.5 rounded bg-white/6 border border-white/10 text-white/40 text-[10px] font-mono">{cls}</span>
                 ))}
                 {t.classes.length > 3 && <span className="text-white/25 text-[10px]">+{t.classes.length - 3}</span>}
               </div>
-              <div className="flex-shrink-0 w-32">
-                <div className="flex justify-between text-xs mb-1">
+              <div className="flex-shrink-0 w-24 hidden md:block">
+                <div className="flex justify-between text-[10px] mb-1">
                   <span className="text-white/30 font-mono">{t.load}ч</span>
                   <span className="text-white/20 font-mono">{t.maxLoad}ч</span>
                 </div>
-                <div className="h-1.5 bg-white/8 rounded-full overflow-hidden">
-                  <div
-                    className={`h-full rounded-full transition-all ${t.load / t.maxLoad > 0.85 ? "bg-orange-400" : t.load / t.maxLoad > 0.7 ? "bg-cyan-400" : "bg-emerald-400"}`}
-                    style={{ width: `${(t.load / t.maxLoad) * 100}%` }}
-                  />
+                <div className="h-1 bg-white/8 rounded-full overflow-hidden">
+                  <div className={`h-full rounded-full ${t.load / t.maxLoad > 0.85 ? "bg-orange-400" : t.load / t.maxLoad > 0.7 ? "bg-cyan-400" : "bg-emerald-400"}`}
+                    style={{ width: `${(t.load / t.maxLoad) * 100}%` }} />
                 </div>
               </div>
-              <button className="flex-shrink-0 w-7 h-7 rounded-lg bg-white/4 border border-white/8 flex items-center justify-center text-white/30 hover:text-white/60 hover:border-white/20 transition-all">
-                <Icon name="MoreHorizontal" size={14} />
+              <button onClick={() => setDeleteId(t.id)}
+                className="flex-shrink-0 w-7 h-7 rounded-lg bg-white/3 border border-white/6 flex items-center justify-center text-white/20 hover:text-red-400 hover:border-red-400/25 transition-all">
+                <Icon name="Trash2" size={13} />
               </button>
             </div>
           </div>
         ))}
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2 mt-5">
+          <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
+            className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-white/70 disabled:opacity-30 transition-all">
+            <Icon name="ChevronLeft" size={14} />
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+            <button key={p} onClick={() => setPage(p)}
+              className={`w-8 h-8 rounded-lg text-xs font-mono transition-all ${page === p ? "bg-cyan-400/15 text-cyan-400 border border-cyan-400/30" : "bg-white/5 border border-white/10 text-white/40 hover:text-white/70"}`}>
+              {p}
+            </button>
+          ))}
+          <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}
+            className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-white/70 disabled:opacity-30 transition-all">
+            <Icon name="ChevronRight" size={14} />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
 
-type AppScreen = "landing" | "register" | "dashboard";
+type AppScreen = "landing" | "login" | "register" | "dashboard";
 type UserRole = "student" | "teacher" | "admin";
 
 const ROLES: { id: UserRole; label: string; icon: string; desc: string; color: string }[] = [
-  { id: "student", label: "Ученик", icon: "BookOpen", desc: "Просмотр расписания и уведомления", color: "text-cyan-400 border-cyan-400/30 bg-cyan-400/8" },
-  { id: "teacher", label: "Учитель", icon: "GraduationCap", desc: "Расписание, замены и нагрузка", color: "text-violet-400 border-violet-400/30 bg-violet-400/8" },
-  { id: "admin", label: "Администратор", icon: "Shield", desc: "Полный доступ ко всей системе", color: "text-emerald-400 border-emerald-400/30 bg-emerald-400/8" },
+  { id: "student", label: "Ученик",        icon: "BookOpen",      desc: "Расписание уроков и информация о заменах", color: "text-cyan-400 border-cyan-400/30 bg-cyan-400/8" },
+  { id: "teacher", label: "Учитель",       icon: "GraduationCap", desc: "Расписание, замены, тепловая карта",       color: "text-violet-400 border-violet-400/30 bg-violet-400/8" },
+  { id: "admin",   label: "Администратор", icon: "Shield",        desc: "Полный доступ ко всей системе",            color: "text-emerald-400 border-emerald-400/30 bg-emerald-400/8" },
 ];
 
 function LandingPage({ onRegister, onLogin }: { onRegister: () => void; onLogin: () => void }) {
@@ -902,22 +1096,118 @@ function LandingPage({ onRegister, onLogin }: { onRegister: () => void; onLogin:
   );
 }
 
-function RegisterPage({ onBack, onComplete }: { onBack: () => void; onComplete: (role: UserRole) => void }) {
-  const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
-  const [step, setStep] = useState<"role" | "form">("role");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+const inputCls = "w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/85 placeholder-white/20 text-sm focus:outline-none focus:border-cyan-400/40 transition-colors";
 
-  const handleNext = () => {
-    if (selectedRole) setStep("form");
+function LoginPage({ onBack, onComplete, onRegister }: { onBack: () => void; onComplete: (role: UserRole) => void; onRegister: () => void }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [showPw, setShowPw] = useState(false);
+
+  // Demo credentials
+  const DEMO: Record<string, UserRole> = {
+    "student@school.ru": "student",
+    "teacher@school.ru": "teacher",
+    "admin@school.ru":   "admin",
   };
 
-  const handleSubmit = () => {
-    if (selectedRole) onComplete(selectedRole);
+  const handleLogin = () => {
+    setError("");
+    if (!email.trim() || !password) { setError("Введите email и пароль"); return; }
+    if (password.length < 6) { setError("Пароль минимум 6 символов"); return; }
+    const role = DEMO[email.toLowerCase().trim()];
+    if (role && password === "password123") { onComplete(role); return; }
+    // любой email+пароль → студент (демо-режим)
+    onComplete("student");
   };
 
   return (
     <div className="mesh-bg min-h-screen flex flex-col items-center justify-center px-6 py-12">
+      <div className="w-full max-w-sm animate-scale-in opacity-0" style={{ animationFillMode: "forwards" }}>
+        <button onClick={onBack} className="flex items-center gap-1.5 text-white/35 text-sm hover:text-white/60 transition-colors mb-8">
+          <Icon name="ArrowLeft" size={14} />
+          Назад
+        </button>
+
+        <div className="text-center mb-8">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-violet-600 flex items-center justify-center mx-auto mb-3 glow-blue">
+            <Icon name="LogIn" size={20} />
+          </div>
+          <h2 className="text-2xl font-black text-white mb-1">Вход в кабинет</h2>
+          <p className="text-white/35 text-sm">Используйте email и пароль</p>
+        </div>
+
+        <div className="space-y-3 mb-2">
+          <div>
+            <label className="block text-white/40 text-xs font-mono uppercase tracking-wider mb-1.5">Email или логин</label>
+            <input value={email} onChange={e => setEmail(e.target.value)} placeholder="example@school.ru" className={inputCls} />
+          </div>
+          <div>
+            <label className="block text-white/40 text-xs font-mono uppercase tracking-wider mb-1.5">Пароль</label>
+            <div className="relative">
+              <input type={showPw ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)}
+                onKeyDown={e => e.key === "Enter" && handleLogin()}
+                placeholder="••••••••" className={inputCls + " pr-10"} />
+              <button onClick={() => setShowPw(p => !p)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/25 hover:text-white/50 transition-colors">
+                <Icon name={showPw ? "EyeOff" : "Eye"} size={15} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {error && <p className="text-red-400 text-xs mb-3 px-1">{error}</p>}
+
+        <button onClick={handleLogin}
+          className="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 text-white font-bold text-sm hover:opacity-90 transition-all mt-4">
+          Войти
+        </button>
+
+        <div className="mt-5 p-3 rounded-xl bg-white/3 border border-white/8">
+          <p className="text-white/30 text-[10px] font-mono text-center mb-2 uppercase tracking-wider">Демо-доступ</p>
+          <div className="space-y-1">
+            {[["student@school.ru","Ученик","text-cyan-400"],["teacher@school.ru","Учитель","text-violet-400"],["admin@school.ru","Администратор","text-emerald-400"]].map(([e, l, c]) => (
+              <button key={e} onClick={() => { setEmail(e); setPassword("password123"); }}
+                className="w-full flex items-center justify-between px-2 py-1 rounded-lg hover:bg-white/5 transition-colors">
+                <span className="text-white/30 text-[10px] font-mono">{e}</span>
+                <span className={`text-[10px] font-medium ${c}`}>{l}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <p className="text-center text-white/25 text-xs mt-5">
+          Нет аккаунта?{" "}
+          <button onClick={onRegister} className="text-cyan-400 hover:text-cyan-300 transition-colors">Зарегистрироваться</button>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function RegisterPage({ onBack, onComplete, onLogin }: { onBack: () => void; onComplete: (role: UserRole) => void; onLogin: () => void }) {
+  const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
+  const [step, setStep] = useState<"role" | "form">("role");
+  const [lastName, setLastName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [classNum, setClassNum] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPw, setShowPw] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = () => {
+    setError("");
+    if (!lastName.trim() || !firstName.trim()) { setError("Введите имя и фамилию"); return; }
+    if (!email.trim()) { setError("Введите email"); return; }
+    if (password.length < 6) { setError("Пароль минимум 6 символов"); return; }
+    if (selectedRole) onComplete(selectedRole);
+  };
+
+  const ALL_GRADES = Array.from({ length: 11 }, (_, i) => i + 1);
+  const LETTERS = ["А","Б","В","Г","Д"];
+
+  return (
+    <div className="mesh-bg min-h-screen flex flex-col items-center justify-center px-6 py-12 overflow-y-auto">
       <div className="w-full max-w-md animate-scale-in opacity-0" style={{ animationFillMode: "forwards" }}>
         <button onClick={onBack} className="flex items-center gap-1.5 text-white/35 text-sm hover:text-white/60 transition-colors mb-8">
           <Icon name="ArrowLeft" size={14} />
@@ -927,19 +1217,13 @@ function RegisterPage({ onBack, onComplete }: { onBack: () => void; onComplete: 
         {step === "role" ? (
           <>
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-black text-white mb-2">Кто вы?</h2>
+              <h2 className="text-2xl font-black text-white mb-2">Регистрация</h2>
               <p className="text-white/40 text-sm">Выберите роль для настройки доступа</p>
             </div>
-
             <div className="space-y-3 mb-8">
               {ROLES.map(role => (
-                <button
-                  key={role.id}
-                  onClick={() => setSelectedRole(role.id)}
-                  className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all duration-200 ${
-                    selectedRole === role.id ? role.color : "border-white/8 bg-white/3 hover:border-white/15"
-                  }`}
-                >
+                <button key={role.id} onClick={() => setSelectedRole(role.id)}
+                  className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all duration-200 ${selectedRole === role.id ? role.color : "border-white/8 bg-white/3 hover:border-white/15"}`}>
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${selectedRole === role.id ? role.color.split(" ")[2] : "bg-white/5"}`}>
                     <Icon name={role.icon} size={20} className={selectedRole === role.id ? role.color.split(" ")[0] : "text-white/40"} />
                   </div>
@@ -947,71 +1231,83 @@ function RegisterPage({ onBack, onComplete }: { onBack: () => void; onComplete: 
                     <div className={`font-bold text-sm ${selectedRole === role.id ? role.color.split(" ")[0] : "text-white/70"}`}>{role.label}</div>
                     <div className="text-white/35 text-xs mt-0.5">{role.desc}</div>
                   </div>
-                  {selectedRole === role.id && (
-                    <Icon name="CheckCircle" size={18} className={role.color.split(" ")[0]} />
-                  )}
+                  {selectedRole === role.id && <Icon name="CheckCircle" size={18} className={role.color.split(" ")[0]} />}
                 </button>
               ))}
             </div>
-
-            <button
-              onClick={handleNext}
-              disabled={!selectedRole}
-              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 text-white font-bold text-sm hover:opacity-90 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
-            >
+            <button onClick={() => selectedRole && setStep("form")} disabled={!selectedRole}
+              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 text-white font-bold text-sm hover:opacity-90 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
               Продолжить
             </button>
+            <p className="text-center text-white/25 text-xs mt-4">
+              Уже есть аккаунт?{" "}
+              <button onClick={onLogin} className="text-cyan-400 hover:text-cyan-300 transition-colors">Войти</button>
+            </p>
           </>
         ) : (
           <>
-            <div className="text-center mb-8">
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 ${ROLES.find(r => r.id === selectedRole)?.color.split(" ").slice(1).join(" ")}`}>
-                <Icon name={ROLES.find(r => r.id === selectedRole)?.icon || "User"} size={22} className={ROLES.find(r => r.id === selectedRole)?.color.split(" ")[0]} />
+            <div className="text-center mb-6">
+              <div className={`w-11 h-11 rounded-xl flex items-center justify-center mx-auto mb-3 ${ROLES.find(r=>r.id===selectedRole)?.color.split(" ").slice(1).join(" ")}`}>
+                <Icon name={ROLES.find(r=>r.id===selectedRole)?.icon||"User"} size={20} className={ROLES.find(r=>r.id===selectedRole)?.color.split(" ")[0]} />
               </div>
               <h2 className="text-2xl font-black text-white mb-1">Создать аккаунт</h2>
-              <p className="text-white/40 text-sm">{ROLES.find(r => r.id === selectedRole)?.label}</p>
+              <p className="text-white/40 text-sm">{ROLES.find(r=>r.id===selectedRole)?.label}</p>
             </div>
 
-            <div className="space-y-3 mb-6">
-              <div>
-                <label className="block text-white/40 text-xs font-mono uppercase tracking-wider mb-1.5">Имя и фамилия</label>
-                <input
-                  value={name}
-                  onChange={e => setName(e.target.value)}
-                  placeholder="Иванов Иван"
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/85 placeholder-white/20 text-sm focus:outline-none focus:border-cyan-400/40 transition-colors"
-                />
+            <div className="space-y-3 mb-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-white/40 text-xs font-mono uppercase tracking-wider mb-1.5">Фамилия</label>
+                  <input value={lastName} onChange={e => setLastName(e.target.value)} placeholder="Иванов" className={inputCls} />
+                </div>
+                <div>
+                  <label className="block text-white/40 text-xs font-mono uppercase tracking-wider mb-1.5">Имя</label>
+                  <input value={firstName} onChange={e => setFirstName(e.target.value)} placeholder="Иван" className={inputCls} />
+                </div>
               </div>
+
+              {selectedRole === "student" && (
+                <div>
+                  <label className="block text-white/40 text-xs font-mono uppercase tracking-wider mb-1.5">Класс</label>
+                  <div className="flex gap-2">
+                    <select onChange={e => setClassNum(v => e.target.value + v.slice(-1))}
+                      className="flex-1 px-3 py-3 rounded-xl bg-white/5 border border-white/10 text-white/70 text-sm focus:outline-none focus:border-cyan-400/40 transition-colors">
+                      <option value="">Параллель</option>
+                      {ALL_GRADES.map(g => <option key={g} value={g}>{g}</option>)}
+                    </select>
+                    <select onChange={e => setClassNum(v => v.slice(0,-1) + e.target.value)}
+                      className="w-24 px-3 py-3 rounded-xl bg-white/5 border border-white/10 text-white/70 text-sm focus:outline-none focus:border-cyan-400/40 transition-colors">
+                      <option value="">Лит.</option>
+                      {LETTERS.map(l => <option key={l} value={l}>{l}</option>)}
+                    </select>
+                  </div>
+                </div>
+              )}
+
               <div>
-                <label className="block text-white/40 text-xs font-mono uppercase tracking-wider mb-1.5">Email</label>
-                <input
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  placeholder="example@school.ru"
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/85 placeholder-white/20 text-sm focus:outline-none focus:border-cyan-400/40 transition-colors"
-                />
+                <label className="block text-white/40 text-xs font-mono uppercase tracking-wider mb-1.5">Email (используется как логин)</label>
+                <input value={email} onChange={e => setEmail(e.target.value)} placeholder="example@school.ru" className={inputCls} />
               </div>
               <div>
                 <label className="block text-white/40 text-xs font-mono uppercase tracking-wider mb-1.5">Пароль</label>
-                <input
-                  type="password"
-                  placeholder="••••••••"
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/85 placeholder-white/20 text-sm focus:outline-none focus:border-cyan-400/40 transition-colors"
-                />
+                <div className="relative">
+                  <input type={showPw ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)}
+                    placeholder="Минимум 6 символов" className={inputCls + " pr-10"} />
+                  <button onClick={() => setShowPw(p=>!p)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/25 hover:text-white/50 transition-colors">
+                    <Icon name={showPw ? "EyeOff" : "Eye"} size={15} />
+                  </button>
+                </div>
               </div>
             </div>
 
-            <button
-              onClick={handleSubmit}
-              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 text-white font-bold text-sm hover:opacity-90 transition-all"
-            >
+            {error && <p className="text-red-400 text-xs mb-3 px-1">{error}</p>}
+
+            <button onClick={handleSubmit}
+              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 text-white font-bold text-sm hover:opacity-90 transition-all">
               Зарегистрироваться
             </button>
-            <button
-              onClick={() => setStep("role")}
-              className="w-full mt-2 py-2 text-white/30 text-xs hover:text-white/50 transition-colors"
-            >
-              Изменить роль
+            <button onClick={() => setStep("role")} className="w-full mt-2 py-2 text-white/25 text-xs hover:text-white/50 transition-colors">
+              ← Изменить роль
             </button>
           </>
         )}
@@ -1022,15 +1318,15 @@ function RegisterPage({ onBack, onComplete }: { onBack: () => void; onComplete: 
 
 // ── Доступ по ролям ───────────────────────────────────────────────────────────
 const ROLE_NAV: Record<UserRole, string[]> = {
-  student: ["schedule", "teachers"],
-  teacher: ["schedule", "heatmap", "substitutions", "reports", "teachers"],
+  student: ["schedule", "substitutions"],
+  teacher: ["schedule", "heatmap", "substitutions", "reports"],
   admin:   ["schedule", "heatmap", "analytics", "conflicts", "substitutions", "reports", "teachers"],
 };
 
 const ROLE_CONFIG: Record<UserRole, { label: string; sublabel: string; icon: string; iconColor: string; iconBg: string }> = {
-  student: { label: "Ученик",          sublabel: "Просмотр расписания", icon: "BookOpen", iconColor: "text-cyan-400",   iconBg: "from-cyan-500/30 to-cyan-500/10" },
-  teacher: { label: "Учитель",         sublabel: "Управление занятиями", icon: "GraduationCap", iconColor: "text-violet-400", iconBg: "from-violet-500/30 to-violet-500/10" },
-  admin:   { label: "Администратор",   sublabel: "Полный доступ",        icon: "Shield",    iconColor: "text-emerald-400", iconBg: "from-emerald-500/30 to-emerald-500/10" },
+  student: { label: "Ученик",        sublabel: "Расписание и замены",  icon: "BookOpen",      iconColor: "text-cyan-400",    iconBg: "from-cyan-500/30 to-cyan-500/10" },
+  teacher: { label: "Учитель",       sublabel: "Управление занятиями", icon: "GraduationCap", iconColor: "text-violet-400",  iconBg: "from-violet-500/30 to-violet-500/10" },
+  admin:   { label: "Администратор", sublabel: "Полный доступ",        icon: "Shield",        iconColor: "text-emerald-400", iconBg: "from-emerald-500/30 to-emerald-500/10" },
 };
 
 export default function Index() {
@@ -1043,11 +1339,27 @@ export default function Index() {
   const allowedNav = NAV_ITEMS.filter(item => ROLE_NAV[currentRole].includes(item.id));
   const currentNav = allowedNav.find(n => n.id === activeSection) ?? allowedNav[0];
 
+  const goToDashboard = (role: UserRole) => {
+    setCurrentRole(role);
+    setActiveSection("schedule");
+    setScreen("dashboard");
+  };
+
   if (screen === "landing") {
     return (
       <LandingPage
         onRegister={() => setScreen("register")}
-        onLogin={() => setScreen("dashboard")}
+        onLogin={() => setScreen("login")}
+      />
+    );
+  }
+
+  if (screen === "login") {
+    return (
+      <LoginPage
+        onBack={() => setScreen("landing")}
+        onComplete={goToDashboard}
+        onRegister={() => setScreen("register")}
       />
     );
   }
@@ -1056,7 +1368,8 @@ export default function Index() {
     return (
       <RegisterPage
         onBack={() => setScreen("landing")}
-        onComplete={(role) => { setCurrentRole(role); setActiveSection("schedule"); setScreen("dashboard"); }}
+        onComplete={goToDashboard}
+        onLogin={() => setScreen("login")}
       />
     );
   }
