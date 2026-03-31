@@ -640,11 +640,241 @@ function TeachersSection() {
   );
 }
 
+type AppScreen = "landing" | "register" | "dashboard";
+type UserRole = "student" | "teacher" | "admin";
+
+const ROLES: { id: UserRole; label: string; icon: string; desc: string; color: string }[] = [
+  { id: "student", label: "Ученик", icon: "BookOpen", desc: "Просмотр расписания и уведомления", color: "text-cyan-400 border-cyan-400/30 bg-cyan-400/8" },
+  { id: "teacher", label: "Учитель", icon: "GraduationCap", desc: "Расписание, замены и нагрузка", color: "text-violet-400 border-violet-400/30 bg-violet-400/8" },
+  { id: "admin", label: "Администратор", icon: "Shield", desc: "Полный доступ ко всей системе", color: "text-emerald-400 border-emerald-400/30 bg-emerald-400/8" },
+];
+
+function LandingPage({ onRegister, onLogin }: { onRegister: () => void; onLogin: () => void }) {
+  const features = [
+    { icon: "Search", label: "Поиск слотов", desc: "Свободное время для мероприятий и консультаций" },
+    { icon: "Flame", label: "Тепловая карта", desc: "Прогноз загруженности кабинетов" },
+    { icon: "AlertTriangle", label: "Конфликты", desc: "Автовыявление двойных записей" },
+    { icon: "RefreshCcw", label: "Замены", desc: "ИИ-подбор кандидатов при болезни" },
+  ];
+
+  return (
+    <div className="mesh-bg min-h-screen flex flex-col">
+      {/* Header */}
+      <header className="flex items-center justify-between px-8 py-5 border-b border-white/6">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-violet-600 flex items-center justify-center glow-blue">
+            <Icon name="BrainCircuit" size={18} />
+          </div>
+          <span className="text-white font-bold text-base">Умное расписание</span>
+        </div>
+        <button
+          onClick={onLogin}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/12 text-white/70 text-sm font-medium hover:bg-white/10 hover:text-white transition-all"
+        >
+          <Icon name="LogIn" size={15} />
+          Личный кабинет
+        </button>
+      </header>
+
+      {/* Hero */}
+      <main className="flex-1 flex flex-col items-center justify-center px-6 py-16 text-center">
+        <div className="animate-fade-in opacity-0" style={{ animationFillMode: "forwards" }}>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-400/10 border border-cyan-400/20 text-cyan-400 text-xs font-mono mb-8">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse block" />
+            Интеллектуальная система управления расписанием
+          </div>
+
+          <h1 className="text-5xl md:text-7xl font-black text-white leading-none mb-4 tracking-tight">
+            Умное
+            <br />
+            <span className="text-gradient-multi">расписание</span>
+          </h1>
+
+          <p className="text-white/45 text-lg max-w-xl mx-auto mb-12 leading-relaxed">
+            Не просто таблица — активный помощник, который анализирует, предупреждает о конфликтах и предлагает решения
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <button
+              onClick={onRegister}
+              className="flex items-center gap-2.5 px-8 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 text-white font-bold text-base hover:opacity-90 transition-all glow-blue shadow-lg"
+            >
+              <Icon name="UserPlus" size={18} />
+              Зарегистрироваться
+            </button>
+            <button
+              onClick={onLogin}
+              className="flex items-center gap-2.5 px-8 py-3.5 rounded-xl bg-white/5 border border-white/15 text-white/80 font-semibold text-base hover:bg-white/10 hover:text-white transition-all"
+            >
+              <Icon name="LogIn" size={18} />
+              Войти в кабинет
+            </button>
+          </div>
+        </div>
+
+        {/* Features */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-20 max-w-3xl w-full">
+          {features.map((f, i) => (
+            <div
+              key={i}
+              className="glass-card rounded-xl p-4 border border-white/6 text-center animate-fade-in opacity-0"
+              style={{ animationDelay: `${200 + i * 80}ms`, animationFillMode: "forwards" }}
+            >
+              <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-cyan-400 mx-auto mb-3">
+                <Icon name={f.icon} size={18} />
+              </div>
+              <div className="text-white/80 text-sm font-semibold mb-1">{f.label}</div>
+              <div className="text-white/35 text-xs leading-relaxed">{f.desc}</div>
+            </div>
+          ))}
+        </div>
+      </main>
+    </div>
+  );
+}
+
+function RegisterPage({ onBack, onComplete }: { onBack: () => void; onComplete: (role: UserRole) => void }) {
+  const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
+  const [step, setStep] = useState<"role" | "form">("role");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+
+  const handleNext = () => {
+    if (selectedRole) setStep("form");
+  };
+
+  const handleSubmit = () => {
+    if (selectedRole) onComplete(selectedRole);
+  };
+
+  return (
+    <div className="mesh-bg min-h-screen flex flex-col items-center justify-center px-6 py-12">
+      <div className="w-full max-w-md animate-scale-in opacity-0" style={{ animationFillMode: "forwards" }}>
+        <button onClick={onBack} className="flex items-center gap-1.5 text-white/35 text-sm hover:text-white/60 transition-colors mb-8">
+          <Icon name="ArrowLeft" size={14} />
+          Назад
+        </button>
+
+        {step === "role" ? (
+          <>
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-black text-white mb-2">Кто вы?</h2>
+              <p className="text-white/40 text-sm">Выберите роль для настройки доступа</p>
+            </div>
+
+            <div className="space-y-3 mb-8">
+              {ROLES.map(role => (
+                <button
+                  key={role.id}
+                  onClick={() => setSelectedRole(role.id)}
+                  className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all duration-200 ${
+                    selectedRole === role.id ? role.color : "border-white/8 bg-white/3 hover:border-white/15"
+                  }`}
+                >
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${selectedRole === role.id ? role.color.split(" ")[2] : "bg-white/5"}`}>
+                    <Icon name={role.icon} size={20} className={selectedRole === role.id ? role.color.split(" ")[0] : "text-white/40"} />
+                  </div>
+                  <div className="text-left flex-1">
+                    <div className={`font-bold text-sm ${selectedRole === role.id ? role.color.split(" ")[0] : "text-white/70"}`}>{role.label}</div>
+                    <div className="text-white/35 text-xs mt-0.5">{role.desc}</div>
+                  </div>
+                  {selectedRole === role.id && (
+                    <Icon name="CheckCircle" size={18} className={role.color.split(" ")[0]} />
+                  )}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={handleNext}
+              disabled={!selectedRole}
+              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 text-white font-bold text-sm hover:opacity-90 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              Продолжить
+            </button>
+          </>
+        ) : (
+          <>
+            <div className="text-center mb-8">
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 ${ROLES.find(r => r.id === selectedRole)?.color.split(" ").slice(1).join(" ")}`}>
+                <Icon name={ROLES.find(r => r.id === selectedRole)?.icon || "User"} size={22} className={ROLES.find(r => r.id === selectedRole)?.color.split(" ")[0]} />
+              </div>
+              <h2 className="text-2xl font-black text-white mb-1">Создать аккаунт</h2>
+              <p className="text-white/40 text-sm">{ROLES.find(r => r.id === selectedRole)?.label}</p>
+            </div>
+
+            <div className="space-y-3 mb-6">
+              <div>
+                <label className="block text-white/40 text-xs font-mono uppercase tracking-wider mb-1.5">Имя и фамилия</label>
+                <input
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  placeholder="Иванов Иван"
+                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/85 placeholder-white/20 text-sm focus:outline-none focus:border-cyan-400/40 transition-colors"
+                />
+              </div>
+              <div>
+                <label className="block text-white/40 text-xs font-mono uppercase tracking-wider mb-1.5">Email</label>
+                <input
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  placeholder="example@school.ru"
+                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/85 placeholder-white/20 text-sm focus:outline-none focus:border-cyan-400/40 transition-colors"
+                />
+              </div>
+              <div>
+                <label className="block text-white/40 text-xs font-mono uppercase tracking-wider mb-1.5">Пароль</label>
+                <input
+                  type="password"
+                  placeholder="••••••••"
+                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/85 placeholder-white/20 text-sm focus:outline-none focus:border-cyan-400/40 transition-colors"
+                />
+              </div>
+            </div>
+
+            <button
+              onClick={handleSubmit}
+              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 text-white font-bold text-sm hover:opacity-90 transition-all"
+            >
+              Зарегистрироваться
+            </button>
+            <button
+              onClick={() => setStep("role")}
+              className="w-full mt-2 py-2 text-white/30 text-xs hover:text-white/50 transition-colors"
+            >
+              Изменить роль
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function Index() {
+  const [screen, setScreen] = useState<AppScreen>("landing");
   const [activeSection, setActiveSection] = useState("schedule");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const conflictCount = CONFLICTS.length;
   const currentNav = NAV_ITEMS.find(n => n.id === activeSection);
+
+  if (screen === "landing") {
+    return (
+      <LandingPage
+        onRegister={() => setScreen("register")}
+        onLogin={() => setScreen("dashboard")}
+      />
+    );
+  }
+
+  if (screen === "register") {
+    return (
+      <RegisterPage
+        onBack={() => setScreen("landing")}
+        onComplete={() => setScreen("dashboard")}
+      />
+    );
+  }
 
   const renderSection = () => {
     switch (activeSection) {
